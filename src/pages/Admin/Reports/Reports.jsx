@@ -16,7 +16,7 @@ const Reports = (props) => {
     for (let i = 1; i <= 20; i++) {
         data.push({
             id: i, 
-            name: 'Имя ' + i,
+            name: 'Очень длинное имя в две строки ' + i,
         })
     }
     return (
@@ -25,7 +25,7 @@ const Reports = (props) => {
                 <div className="admin__reports-header">
                     <h2 className="title-small admin__reports-title mb-middle">Отчеты</h2>
                 </div>
-                <p className="list__item list__item_title">
+                <p className="list__item list__item_title grid2">
                     <span className="list__item-box text-small text-grey">Выбран</span>
                     <span className="list__item-box text-small text-grey">Имя</span>
                 </p>
@@ -38,7 +38,7 @@ const Reports = (props) => {
                     <h2 className="title-small admin__reports-title mb-middle">Группы отчетов</h2>
                     <p className="text-grey text-small admin__reports-text">Чтобы посмотреть отчеты в группе, кликните по названию группы</p>
                 </div>
-                <p className="list__item list__item_title list__item-header">
+                <p className="list__item list__item_title grid3">
                     <span className="list__item-box text-small text-grey">Выбран</span>
                     <span className="list__item-box text-small text-grey">Имя</span>
                     <span className="list__item-box text-small text-grey">Удалить</span>

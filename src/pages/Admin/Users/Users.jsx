@@ -33,7 +33,7 @@ const UsersRouter = () => {
                 <div className="admin__reports-header">
                     <h2 className="title-small admin__reports-title mb-middle">Группы отчетов</h2>
                 </div>
-                <p className="list__item list__item_title">
+                <p className="list__item list__item_title grid2">
                     <span className="list__item-box text-small text-grey">Выбран</span>
                     <span className="list__item-box text-small text-grey">Имя</span>
                 </p>
@@ -58,7 +58,7 @@ const UsersRouter = () => {
                         <h2 className="title-small admin__reports-title mb-middle">Пользователи</h2>
                         <p className="text-grey text-small admin__reports-text">Чтобы посмотреть отчеты у пользователей, кликните по имени пользователя</p>
                     </div>
-                    <p className="list__item list__item_title list__item-header">
+                    <p className="list__item list__item_title list__item-header grid2">
                         <span className="list__item-box text-small text-grey">Выбран</span>
                         <span className="list__item-box text-small text-grey">Имя</span>
                     </p>

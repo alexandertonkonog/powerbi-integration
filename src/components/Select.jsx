@@ -11,8 +11,8 @@ const Select = (props) => {
     let clickHeaderCallback = () => {
         setOpen(!open);
     }
-    let clickItemCallback = (id, valueID) => {
-        props.clickItem(id, valueID);
+    let clickItemCallback = (id, valueId) => {
+        props.clickItem(id, valueId);
         setSelected(true);
         setOpen(false);
     }

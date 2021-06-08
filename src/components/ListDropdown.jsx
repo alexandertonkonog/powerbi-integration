@@ -18,20 +18,20 @@ const ListDropdown = ({name, id, selectItem, checked, list, remove}) => {
     ]
     return (
         <li className="list__item list__item_dropdown">
-            <p className="list__item-header">
+            <p className="list__item-header grid3">
                 <input 
                     onChange={() => selectItem(id)} 
                     checked={checked} 
                     className="checkbox" 
                     type="checkbox" />
                 <p 
-                    className="text-main list__item-title"
+                    className="text-small list__item-title"
                     onClick={() => setOpen(!open)}>{name}</p>
                 {remove && <button className="btn btn_small btn_red text-uppercase">Удалить</button>}
             </p>
             {open && <ul className="list__item-dropdown">
                 {data.map(item => (
-                    <li className="list__item" key={item.id}>
+                    <li className="list__item grid2" key={item.id}>
                         <input 
                             onChange={() => selectDropDownItem(item.id)} 
                             checked={selected.includes(item.id)} 
