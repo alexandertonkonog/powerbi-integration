@@ -419,6 +419,7 @@ ul.list__item-dropdown {
 .interface__report {
   width: 100%;
   object-fit: cover;
+  height: 50vh;
 }
 
 /*header*/

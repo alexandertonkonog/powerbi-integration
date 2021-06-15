@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { Route, NavLink, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import ListItem from '../../../components/ListItem';
 import ListDropdown from '../../../components/ListDropdown';
-import { Route, NavLink, Link } from 'react-router-dom';
+import { setUsersIntoGroup } from '../../../redux/mainReducer';
 
 const UsersRouter = () => {
     let [reports, setReports] = useState([]);
     let [groups, setGroups] = useState([]);
+    const dispatch = useDispatch();
     const data = [];
     const selectItem = (state, setState) => (id) => {
         if (state.includes(id)) {
@@ -19,6 +22,9 @@ const UsersRouter = () => {
             id: i, 
             name: 'Имя ' + i,
         })
+    }
+    const saveUsers = () => {
+        dispatch(setUsersIntoGroup())
     }
     return (
         <>
@@ -78,7 +84,7 @@ const UsersRouter = () => {
                         <h2 className="title-small admin__reports-title mb-middle">Группы пользователей</h2>
                         <p className="text-grey text-small admin__reports-text">Чтобы посмотреть отчеты у групп пользователей, кликните по названию группы</p>
                     </div>
-                    <p className="list__item list__item_title list__item-header">
+                    <p className="list__item list__item_title list__item-header grid2">
                         <span className="list__item-box text-small text-grey">Выбран</span>
                         <span className="list__item-box text-small text-grey">Имя</span>
                     </p>
@@ -95,7 +101,7 @@ const UsersRouter = () => {
             </Route>
             
             <section className="admin__reports-col admin__btn-area">
-                <button className="btn btn_blue text-uppercase">Сохранить</button>
+                <button className="btn btn_blue text-uppercase" onClick={saveUsers}>Сохранить</button>
             </section>
         </main>
         </>
