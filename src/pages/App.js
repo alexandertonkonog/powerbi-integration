@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { auth } from '../redux/mainReducer';
 import Admin from './Admin/Admin';
 import User from './User/User';
 import icon from '../images/icon.svg';
 
 const App = () => {
+	const dispatch = useDispatch();
 	const isAdmin = useSelector(state => state.main.isAdmin);
+	const token = useSelector(state => state.main.token);
+	useEffect(() => {
+		dispatch(auth());
+	}, [])
 	return (
 		<div className="wrapper">
 			{/* <header className="header">
@@ -31,7 +37,7 @@ const App = () => {
 				)
 			}
 			<Route exact path="/" >
-				<User />
+				{token && <User isAdmin={isAdmin} token={token} auth={auth} />}
 			</Route>
 			<Route path="/admin" >
 				{!isAdmin && <Redirect to="/" />}
