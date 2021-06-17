@@ -363,6 +363,10 @@ ul.list__item-dropdown {
   max-height: 50vh;
   overflow-y: auto;
 }
+.admin__reports-col-not {
+  padding-left: 30px;
+  padding-bottom: 0;
+}
 .admin__btn-area {
   padding: 20px 0;
 }

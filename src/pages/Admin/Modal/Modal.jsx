@@ -1,102 +1,88 @@
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
+import { useDispatch, useSelector } from 'react-redux';
 import Input from '../../../components/Input';
 import { isLength } from '../../../utils/validate';
 import LoadButton from '../../../components/LoadButton';
+import { setGroup } from '../../../redux/mainReducer';
+import ModalWrap from "../Modal/ModalWrap";
 
-const Modal = (props) => {
+const Modal = ({modal, openModal, type}) => {
 	let [formLoading, setFormLoading] = useState(false);
-	const onSubmit = (values) => {
-		console.log(values);
+	const dispatch = useDispatch();
+	const onSubmit = async (values) => {
+		setFormLoading(true);
+		const body = {
+			...values,
+			type
+		}
+		const result = await dispatch(setGroup(body));
+		setFormLoading(false);
+		if (result.success) {
+			openModal({visible: true, screen: 2, error: null});
+		} else {
+			openModal({visible: true, screen: 3, error: result.error});
+		}
 	};
 	const fields = [
 		{
 			id: 1,
 			name: "name",
 			req: true,
-			validate: isLength(10, 30),
+			validate: isLength(5, 200),
 			text: "Название",
 			placeholder: "Введите название",
 		},
 		{
 			id: 2,
 			name: "description",
-			req: true,
+			req: false,
 			validate: null,
 			text: "Описание",
 			placeholder: "Введите описание",
 		},
 	];
-	// if (!props.visible) {
-	//     return <></>;
-	// }
+	const modalOptions = {
+		visible: modal.visible,
+		screen: modal.screen,
+		error: modal.error,
+		title: type === 'report' ? 'Создать группу отчетов' : 'Создать группу пользователей',
+		success: 'Вы успешно добавили элементы',
+		modal: openModal
+	}
 	return (
-		<div className="modal">
-			<div className="modal__content">
-				<p
-					className="modal__exit"
-					onClick={() =>
-						props.openModal({
-							visible: false,
-							screen: 1,
-							error: null,
-						})
-					}
-				>
-					&times;
-				</p>
-				<h2 className="title-small mb-main">
-					Создание новой группы отчетов
-				</h2>
-				{props.modal.screen === 1 && (
-					<div className="modal__screen">
-						<Form onSubmit={onSubmit}>
-							{({ handleSubmit }) => (
-								<form
-									className="admin__form"
-									onSubmit={handleSubmit}
-								>
-									{fields.map((item) => (
-										<Field
-											name={item.name}
-											validate={item.validate}
-										>
-											{(fieldProps) => (
-												<Input
-													input={fieldProps.input}
-													meta={fieldProps.meta}
-													addClass="mb-middle"
-													{...item}
-												/>
-											)}
-										</Field>
-									))}
-									<LoadButton
-										text="Создать"
-										addClass="btn_blue text-uppercase"
-										loading={formLoading}
+		<ModalWrap options={modalOptions}>
+			<Form onSubmit={onSubmit}>
+				{({ handleSubmit }) => (
+					<form
+						className="admin__form"
+						onSubmit={handleSubmit}
+					>
+						{fields.map((item) => (
+							<Field
+								key={item.id}
+								name={item.name}
+								validate={item.validate}
+							>
+								{(fieldProps) => (
+									<Input
+										input={fieldProps.input}
+										meta={fieldProps.meta}
+										addClass="mb-middle"
+										{...item}
 									/>
-								</form>
-							)}
-						</Form>
-					</div>
+								)}
+							</Field>
+						))}
+						<LoadButton
+							text="Создать"
+							addClass="btn_blue text-uppercase"
+							loading={formLoading}
+						/>
+					</form>
 				)}
-				{props.modal.screen === 2 && (
-					<div className="modal__screen">
-						<p className="text-main text-grey">
-							Вы успешно создали группу
-						</p>
-					</div>
-				)}
-				{props.modal.screen === 3 && (
-					<div className="modal__screen">
-						<p className="text-main text-grey">
-							Произошла ошибка. Группа не создана
-						</p>
-					</div>
-				)}
-			</div>
-		</div>
+			</Form>
+		</ModalWrap>
 	);
 }
 

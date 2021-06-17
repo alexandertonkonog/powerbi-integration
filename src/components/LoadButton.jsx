@@ -2,9 +2,14 @@ import React from 'react';
 import load from '../images/load.gif';
 
 const LoadButton = (props) => {
-    let type = props.type || 'submit';
-    let click = props.onClick || function() {};
-    let text = props.text || 'Отправить';
+    const type = props.type || "submit";
+	const func = props.onClick || function () {};
+	const click = () => {
+		if (!props.loading) {
+			func();
+		}
+	};
+	const text = props.text || "Отправить";
     return (
         <button disabled={props.loading} className={"btn_load btn " + props.addClass} type={type} onClick={click}>
             {props.loading  
