@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+.block {
+    width: 500px;
+    margin: auto;
+}
+.form {
+    padding: 50px 20px;
+}
+
+.block * {
+    font-family: Roboto;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.input-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.input {
+    width: 100%;
+    outline: none;
+    border: 1px solid #D9E2D5;
+    height: 40px;
+    border-radius: 2px;
+    padding-left: 10px;
+}
+.input_error {
+    border: 1px solid #BE1622;
+}
+.input-des {
+    font-size: 14px;
+    color: #858578;
+    margin-top: 10px;
+}
+.label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.label__error, .input_req {
+    color: #BE1622;
+}
+.btn {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    display: block;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all ease 0.2s;
+    border-radius: 2px;
+    height: 40px;
+    background-color: #14BFD5;
+    color: white;
+    width: 200px;
+}
+.btn:hover {
+    background-color: #3bc8f5;
+}
+.title {
+    margin-bottom: 50px;
+}
+.title-second {
+    margin-bottom: 20px;
+}
+.progress {
+    width: 100%;
+    border: 1px solid #D9E2D5;
+    padding: 2px;
+}
+.progress__bar {
+    background: #0DC042;
+    width: 0;
+    height: 30px;
+    transition: all ease 0.5s;
+}
+.progress__stage {
+    margin-top: 5px;
+    color: #858578;
+}
+.progress__stage-text {
+    color: black;
+}
+
+
+.form_hidden {
+    display: none;
+}

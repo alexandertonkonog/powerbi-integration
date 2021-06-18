@@ -158,9 +158,6 @@ ul.list__item-dropdown {
   margin-right: 20px;
 }
 
-/*input*/
-
-
 /*checkbox*/
 
 .checkbox {
@@ -229,6 +226,9 @@ ul.list__item-dropdown {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+}
+.input-des {
+  margin-top: 10px;
 }
 .input:focus {
   border: 1px solid var(--blue);
@@ -410,9 +410,20 @@ ul.list__item-dropdown {
 }
 
 /*settings*/
+.settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+}
 .settings__col {
   padding: 0 20px;
-  width: 50%;
+}
+.settings .input-container {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--blue);
+}
+.settings__text {
+  line-height: 22px;
 }
 
 /*user*/
@@ -437,6 +448,13 @@ ul.list__item-dropdown {
 }
 .header__toggler {
   width: 30px;
+}
+
+/*report*/
+.report-style-class {
+  border: none;
+  height: 80vh;
+  padding: 10px;
 }
 
 @media screen and (max-width: 1024px) {

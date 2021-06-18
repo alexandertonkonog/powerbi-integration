@@ -4,8 +4,17 @@ const ModalWrap = ({ options, children }) => {
 	if (!options.visible) {
 		return <></>;
 	}
+	const clickModal = (e) => {
+		if (e.target.classList.contains("modal")) {
+			options.modal({
+				visible: false,
+				screen: 1,
+				error: null,
+			});
+		}
+	};
 	return (
-		<div className="modal">
+		<div className="modal" onClick={clickModal}>
 			<div className="modal__content wrapper">
 				<p
 					className="modal__exit"

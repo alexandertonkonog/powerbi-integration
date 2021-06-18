@@ -46,10 +46,13 @@ const Modal = ({modal, openModal, type}) => {
 		visible: modal.visible,
 		screen: modal.screen,
 		error: modal.error,
-		title: type === 'report' ? 'Создать группу отчетов' : 'Создать группу пользователей',
-		success: 'Вы успешно добавили элементы',
-		modal: openModal
-	}
+		title:
+			type === "report"
+				? "Создать группу отчетов"
+				: "Создать группу пользователей",
+		success: modal.success,
+		modal: openModal,
+	};
 	return (
 		<ModalWrap options={modalOptions}>
 			<Form onSubmit={onSubmit}>

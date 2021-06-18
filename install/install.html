@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="install.css">
+    <title>Power BI Integration</title>
+</head>
+<body>
+    <div class="block">
+        <h1 class="title">Установка приложения</h1>
+        <div class="progress-container">
+            <h2 class="title-second">Прогресс</h2>
+            <div class="progress">
+                <div class="progress__bar"></div>
+            </div>
+            <p class="progress__stage">
+                <span>Установка: </span>
+                <span class="progress__stage-text">Загрузка библиотек</span>
+            </p>
+        </div>
+    </div>    
+    <form class="form block form_hidden">
+        <div class="input-container">
+            <label for="" class="label">
+                <span class="label__text">Логин <span class="input_req">*</span></span>
+                <span class="label__error"></span>
+            </label>
+            <input name="login" required type="text" class="input" placeholder="Введите логин от Power BI">
+            <p class="input-des"></p>
+        </div>
+        <div class="input-container">
+            <label for="" class="label">
+                <span class="label__text">Пароль <span class="input_req">*</span></span>
+                <span class="label__error"></span>
+            </label>
+            <input name="password" required type="text" class="input" placeholder="Введите пароль от Power BI">
+            <p class="input-des"></p>
+        </div>
+        <div class="input-container">
+            <label for="" class="label">
+                <span class="label__text">client_id <span class="input_req">*</span></span>
+                <span class="label__error"></span>
+            </label>
+            <input name="client_id" required type="text" class="input" placeholder="Введите client_id приложения Power BI">
+            <p class="input-des">client_id расположен на портале Azure (Регистрация приложений -> Ваше приложение)<p>
+        </div>
+        <div class="input-container">
+            <label for="" class="label">
+                <span class="label__text">сlient_secret <span class="input_req">*</span></span>
+                <span class="label__error"></span>
+            </label>
+            <input name="сlient_secret" required type="text" class="input" placeholder="Введите client_secret приложения Power BI">
+            <p class="input-des">client_secret расположен на портале Azure (Регистрация приложений -> Ваше приложение -> Сертификаты и секреты). Необходимо ввести значение секрета. Первый токен живет 24 месяца, длительность определяется при создании</p>
+        </div>
+        <button class="btn" type="submit">Сохранить</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//api.bitrix24.com/api/v1/"></script>
+    <script src="install.js"></script>
+</body>
+</html>

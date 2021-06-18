@@ -58,17 +58,29 @@ const Admin = () => {
 				</Route>
 				<Route path="/admin/users">
 					<Users openModal={setModal} />
-					<Modal openModal={setModal} modal={modal} type="userGroup" />
+					<Modal
+						openModal={setModal}
+						modal={modal}
+						type="userGroup"
+					/>
 				</Route>
 				<Route path="/admin/groups">
 					<Groups openModal={setModal} />
-					<Modal openModal={setModal} modal={modal} type="userGroup" />
+					<Modal
+						openModal={setModal}
+						modal={modal}
+						type="userGroup"
+					/>
 				</Route>
 				<Route path="/admin/settings">
-					<Settings />
+					<Settings openModal={setModal} />
+					<Modal
+						openModal={setModal}
+						modal={modal}
+						type="userGroup"
+					/>
 				</Route>
 			</Switch>
-			
 		</div>
 	);
 }

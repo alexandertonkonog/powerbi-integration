@@ -6,6 +6,7 @@ const SET_REPORTS = 'SET_REPORTS';
 const SET_USERS = 'SET_USERS';
 const SET_USER_GROUPS = 'SET_USER_GROUPS';
 const SET_AUTH = 'SET_AUTH';
+const SET_SETTINGS = 'SET_SETTINGS';
 const REMOVE_AUTH = 'REMOVE_AUTH';
 
 const initial = {
@@ -15,6 +16,7 @@ const initial = {
     users: null,
     token: null,
     userGroups: null,
+    settings: null,
 }
 
 export const setGroup = (options) => async (dispatch) => {
@@ -35,14 +37,6 @@ export const setGroup = (options) => async (dispatch) => {
             return {success: false};
         }
     }     
-}
-
-export const setUsersIntoGroup = () => async (dispatch) => {
-    const result = await axios.post('http://127.0.0.1:8000/api/user/group/fill', {
-        // group: 1,
-        // users: [1,2]
-    })
-    console.log(result);
 }
 
 export const setEntitiesIntoGroup = (group, entities, type) => async (dispatch) => {
@@ -197,6 +191,28 @@ export const getUserGroups = () => async (dispatch) => {
     }
 }
 
+export const getSettings = () => async (dispatch) => {
+    try {
+        const result = await axios.get('http://127.0.0.1:8000/api/settings/get');
+        dispatch({type: SET_SETTINGS, data: result.data});
+        return {success: true};
+    } catch (e) {
+        console.log(e);
+        return {success: false};
+    }
+}
+
+export const setSettings = (body) => async (dispatch) => {
+    try {
+        const result = await axios.post('http://127.0.0.1:8000/api/settings/set', body);
+        dispatch({type: SET_SETTINGS, data: result.data});
+        return {success: true};
+    } catch (e) {
+        console.log(e);
+        return {success: false};
+    }
+}
+
 const getFormDataFromObject = (data) => {
     const formData = new FormData();
     for (let key in data) {
@@ -232,6 +248,11 @@ export const mainReducer = (state = initial, action) => {
                 ...state,
                 token: action.data.token,
                 isAdmin: action.data.isAdmin
+            }
+        case SET_SETTINGS: 
+            return {
+                ...state,
+                settings: action.data
             }
         case REMOVE_AUTH: 
             return {
