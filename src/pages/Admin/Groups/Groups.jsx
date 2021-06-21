@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-	getUserGroups,
-	getUsers,
 	setEntitiesIntoGroup,
 	removeEntitiesFromGroup,
 	removeGroups,
@@ -31,7 +29,7 @@ const Groups = (props) => {
 		visible: modal.visible,
 		screen: modal.screen,
 		error: modal.error,
-		title: "Отчеты",
+		title: "Пользователи",
 		success: "Вы успешно добавили элементы",
 		modal: setModal,
 	};
@@ -40,10 +38,17 @@ const Groups = (props) => {
 		setSelectGroup(id);
 	};
 	const removeHandle = async (id, list, full) => {
+		if (id === 1 && list.length === 1) {
+			alert("Нельзя удалить последнего члена группы администраторов");
+			return false;
+		}
 		if (!window.confirm("Вы уверены?")) return false;
 		setFormLoading(true);
 		let result;
 		if (full) {
+			if (id === 1) {
+				alert("Нельзя очистить группу администраторов");
+			}
 			result = await dispatch(
 				removeEntitiesFromGroup(id, [], "userUserGroup")
 			);
@@ -88,6 +93,10 @@ const Groups = (props) => {
 	};
 	const removeGroupHandle = async (list) => {
 		if (!list || !list.length) return false;
+		if (list.includes(1)) {
+			alert("Нельзя удалить группу администраторов");
+			return false;
+		}
 		if (!window.confirm("Вы уверены?")) return false;
 		setFormLoading(true);
 		const result = await dispatch(removeGroups(list, "userGroup"));
@@ -124,10 +133,6 @@ const Groups = (props) => {
 			setState([...state, id]);
 		}
 	};
-	useEffect(() => {
-		dispatch(getUserGroups());
-		dispatch(getUsers());
-	}, []);
 	return (
 		<main className="admin__reports mt-main">
 			<section className="admin__reports-col padding-small block">

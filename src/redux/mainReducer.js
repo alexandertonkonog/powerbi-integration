@@ -1,6 +1,15 @@
 import axios from 'axios';
-// import { UserAgentApplication, AuthError, AuthResponse } from "msal";
 
+let BX24;
+if (!window.BX24) {
+    BX24 = {
+        callMethod: async () => { return [{NAME: 'Александр Тонконог', ID: 55}]},
+        init: async () => {return true},
+        getAuth: async () => {return true}
+    };
+}
+
+const API_URL = 'http://127.0.0.1:8000';
 const SET_REPORT_GROUPS = 'SET_REPORT_GROUPS';
 const SET_REPORTS = 'SET_REPORTS';
 const SET_USERS = 'SET_USERS';
@@ -8,6 +17,7 @@ const SET_USER_GROUPS = 'SET_USER_GROUPS';
 const SET_AUTH = 'SET_AUTH';
 const SET_SETTINGS = 'SET_SETTINGS';
 const REMOVE_AUTH = 'REMOVE_AUTH';
+const REFRESH_DATA = 'REFRESH_DATA';
 
 const initial = {
     isAdmin: false,
@@ -30,7 +40,7 @@ export const setGroup = (options) => async (dispatch) => {
     }
     if (url) {
         try {
-            const result = await axios.post('http://127.0.0.1:8000' + url, options);
+            const result = await axios.post(API_URL + url, options);
             dispatch({type: disType, data: result.data});
             return {success: true};
         } catch (e) {
@@ -55,7 +65,7 @@ export const setEntitiesIntoGroup = (group, entities, type) => async (dispatch) 
         disType = SET_USER_GROUPS;
     }
     try {
-        const result = await axios.post('http://127.0.0.1:8000' + url, {
+        const result = await axios.post(API_URL + url, {
             group,
             entities
         })
@@ -83,7 +93,7 @@ export const removeEntitiesFromGroup = (group, entities, type) => async (dispatc
     }
     if (url) {
         try {
-            const result = await axios.post('http://127.0.0.1:8000' + url, {
+            const result = await axios.post(API_URL + url, {
                 group,
                 entities
             })
@@ -106,7 +116,7 @@ export const removeGroups = (groups, type) => async (dispatch) => {
     }
     if (url) {
         try {
-            const result = await axios.post('http://127.0.0.1:8000' + url, {
+            const result = await axios.post(API_URL + url, {
                 groups
             })
             dispatch({type: disType, data: result.data});
@@ -117,14 +127,9 @@ export const removeGroups = (groups, type) => async (dispatch) => {
     }
 }
 
-export const getToken = () => async (dispatch) => {
-    const result = await axios.get('http://127.0.0.1:8000/api/api/token');
-    console.log(result);
-}
-
 export const getUserReportGroups = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/report/user/get');
+        const result = await axios.get(API_URL + '/api/report/user/get');
         dispatch({type: SET_REPORT_GROUPS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -136,9 +141,12 @@ export const getUserReportGroups = () => async (dispatch) => {
 export const auth = () => async (dispatch) => {
     try {
         //get id from bitrix
+        const init = await BXInitPromise();
+        const auth = await BXAuthPromise();
+        const user = await callMethodPromise('profile');
         const id = 1;
-        axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:'+id);
-        const result = await axios.get('http://127.0.0.1:8000/api/token/get');
+        axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + id);
+        const result = await axios.get(API_URL + '/api/token/get');
         dispatch({type: SET_AUTH, data: result.data});
         return {success: true};
     } catch (e) {
@@ -149,7 +157,7 @@ export const auth = () => async (dispatch) => {
 
 export const getReportGroups = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/report/group/get');
+        const result = await axios.get(API_URL + '/api/report/group/get');
         dispatch({type: SET_REPORT_GROUPS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -160,7 +168,7 @@ export const getReportGroups = () => async (dispatch) => {
 
 export const getReports = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/report/get');
+        const result = await axios.get(API_URL + '/api/report/get');
         dispatch({type: SET_REPORTS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -171,7 +179,7 @@ export const getReports = () => async (dispatch) => {
 
 export const getUsers = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/user/get');
+        const result = await axios.get(API_URL + '/api/user/get');
         dispatch({type: SET_USERS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -182,7 +190,7 @@ export const getUsers = () => async (dispatch) => {
 
 export const getUserGroups = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/user/group/get');
+        const result = await axios.get(API_URL + '/api/user/group/get');
         dispatch({type: SET_USER_GROUPS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -193,7 +201,7 @@ export const getUserGroups = () => async (dispatch) => {
 
 export const getSettings = () => async (dispatch) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/settings/get');
+        const result = await axios.get(API_URL + '/api/settings/get');
         dispatch({type: SET_SETTINGS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -204,7 +212,7 @@ export const getSettings = () => async (dispatch) => {
 
 export const setSettings = (body) => async (dispatch) => {
     try {
-        const result = await axios.post('http://127.0.0.1:8000/api/settings/set', body);
+        const result = await axios.post(API_URL + '/api/settings/set', body);
         dispatch({type: SET_SETTINGS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -213,12 +221,96 @@ export const setSettings = (body) => async (dispatch) => {
     }
 }
 
-const getFormDataFromObject = (data) => {
-    const formData = new FormData();
-    for (let key in data) {
-        formData.append(key, data[key]);
+export const refreshData = () => async (dispatch) => {
+    try {
+        const users = await callMethodPromiseMany('user.get');
+        if (users && users.length) {
+            const userArray = users.map(item => ({id: item.ID, name: item.NAME}));
+            const result = await axios.post(API_URL + '/api/settings/refresh', {users: userArray});
+            dispatch({type: SET_USERS, data: result.data.users});
+            dispatch({type: SET_REPORTS, data: result.data.reports});
+            dispatch({type: REFRESH_DATA, data: result.data.lastRefresh});
+        }
+    } catch (e) {
+        alert('Не удалось обновить пользователей и отчеты');
+        console.log(e);
     }
-    return formData;
+}
+
+const callMethodPromiseMany = async (method, body = {}, percents = 0) => {
+    const array = [];
+    const promise = new Promise((res, rej) => {
+        res(BX24.callMethod(
+            // method, 
+            // body,
+            // function(result) {
+            //     if(result.error()) {
+            //         rej(result.error());
+            //     } else {
+            //         this.progress = percents;
+            //         if (res.more()) {
+            //             array = [...array, ...result.data()]
+            //             res.next();
+            //         } else {
+            //             res(array);
+            //         }
+            //     }
+            // }
+        ));
+    })
+    try {
+        return await promise;
+    } catch (e) {
+        this.progressBar.style.backgroundColor = '#BE1622';
+        console.log(e);
+    }
+}
+
+const callMethodPromise = async (method, body = {}, percents = 0) => {
+    const array = [];
+    const promise = new Promise((res, rej) => {
+        res(BX24.callMethod(
+            // method, 
+            // body,
+            // function(result) {
+            //     if(result.error()) {
+            //         rej(result.error());
+            //     } else {
+            //         res(result.data());
+            //     }
+            // }
+        ));
+    })
+    try {
+        return await promise;
+    } catch (e) {
+        this.progressBar.style.backgroundColor = '#BE1622';
+        console.log(e);
+    }
+}
+
+const BXInitPromise = async (method, body = {}, percents = 0) => {
+    const promise = new Promise((res, rej) => {
+        res(BX24.init());
+    })
+    try {
+        return await promise;
+    } catch (e) {
+        this.progressBar.style.backgroundColor = '#BE1622';
+        console.log(e);
+    }
+}
+
+const BXAuthPromise = async (method, body = {}, percents = 0) => {
+    const promise = new Promise((res, rej) => {
+        res(BX24.getAuth());
+    })
+    try {
+        return await promise;
+    } catch (e) {
+        this.progressBar.style.backgroundColor = '#BE1622';
+        console.log(e);
+    }
 }
 
 export const mainReducer = (state = initial, action) => {
@@ -247,7 +339,8 @@ export const mainReducer = (state = initial, action) => {
             return {
                 ...state,
                 token: action.data.token,
-                isAdmin: action.data.isAdmin
+                isAdmin: action.data.isAdmin,
+                lastRefresh: action.data.lastRefresh
             }
         case SET_SETTINGS: 
             return {
@@ -258,6 +351,11 @@ export const mainReducer = (state = initial, action) => {
             return {
                 ...state,
                 token: null,
+            }
+        case REFRESH_DATA: 
+            return {
+                ...state,
+                lastRefresh: action.data,
             }
         default:
             return state;

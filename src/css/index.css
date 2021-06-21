@@ -103,6 +103,12 @@ body, html {
 }
 
 /*loader*/
+.loader-container {
+  text-align: center;
+  width: 50px;
+  margin: auto;
+  padding: 40px 0;
+}
 .loader {
   width: 20px;
 }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-	getReportGroups,
-	getUserGroups,
 	setEntitiesIntoGroup,
 	removeEntitiesFromGroup,
 	removeGroups,
@@ -31,7 +29,7 @@ const Group = (props) => {
 		visible: modal.visible,
 		screen: modal.screen,
 		error: modal.error,
-		title: "Отчеты",
+		title: "Группы отчетов",
 		success: "Вы успешно добавили элементы",
 		modal: setModal,
 	};
@@ -124,10 +122,7 @@ const Group = (props) => {
 			setState([...state, id]);
 		}
 	};
-	useEffect(() => {
-		dispatch(getReportGroups());
-		dispatch(getUserGroups());
-	}, []);
+
 	return (
 		<main className="admin__reports mt-main">
 			<section className="admin__reports-col padding-small block">
@@ -154,7 +149,7 @@ const Group = (props) => {
 						Удалить
 					</span>
 				</p>
-				{reportGroups ? (
+				{userGroups ? (
 					<ul className="list ">
 						{data && data.length ? (
 							data.map((item) => (

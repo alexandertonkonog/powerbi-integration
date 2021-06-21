@@ -5,7 +5,6 @@ import {
 	getReportGroups,
 	setEntitiesIntoGroup,
 	removeEntitiesFromGroup,
-	removeGroups,
 } from "../../../redux/mainReducer";
 import ModalWrap from "../Modal/ModalWrap";
 import ListItem from "../../../components/ListItem";
@@ -31,7 +30,7 @@ const User = (props) => {
 		visible: modal.visible,
 		screen: modal.screen,
 		error: modal.error,
-		title: "Отчеты",
+		title: "Группы отчетов",
 		success: "Вы успешно добавили элементы",
 		modal: setModal,
 	};
@@ -111,10 +110,7 @@ const User = (props) => {
 			setState([...state, id]);
 		}
 	};
-	useEffect(() => {
-		dispatch(getReportGroups());
-		dispatch(getUsers());
-	}, []);
+
 	return (
 		<main className="admin__reports mt-main">
 			<section className="admin__reports-col padding-small block">
@@ -138,7 +134,7 @@ const User = (props) => {
 						Добавить
 					</span>
 				</p>
-				{reportGroups ? (
+				{users ? (
 					<ul className="list ">
 						{data && data.length ? (
 							data.map((item) => (

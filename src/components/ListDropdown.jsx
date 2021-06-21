@@ -28,7 +28,7 @@ const ListDropdown = ({
 	}
 	return (
 		<li className="list__item list__item_dropdown">
-			<p className="list__item-header grid4">
+			<div className="list__item-header grid4">
 				<input
 					onChange={() => selectItem(id)}
 					checked={checked}
@@ -53,7 +53,7 @@ const ListDropdown = ({
 					onClick={removeGroupHandle} 
 					loading={formLoading} />
 				}
-			</p>
+			</div>
 			{open && (
 				<ul className="list__item-dropdown">
 					{data.length ? (

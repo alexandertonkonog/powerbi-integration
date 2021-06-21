@@ -1,24 +1,54 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { auth } from '../redux/mainReducer';
+import { auth, refreshData } from '../redux/mainReducer';
 import Admin from './Admin/Admin';
 import User from './User/User';
-import icon from '../images/icon.svg';
+import Loader from '../components/Loader';
 
 const App = () => {
+	let [authError, setAuthError] = useState(false);
 	const dispatch = useDispatch();
 	const isAdmin = useSelector(state => state.main.isAdmin);
 	const token = useSelector(state => state.main.token);
+	const lastRefresh = useSelector(state => state.main.lastRefresh);
+	const refreshDataInBase = () => {
+		const now = new Date();
+		const date = new Date(lastRefresh);
+		const diff = (now - date) / 3600000;
+		if (diff > 1) {
+			dispatch(refreshData());
+		}
+	}
 	useEffect(() => {
-		dispatch(auth());
-	}, [])
+		const getAuth = async () => {
+			const result = await dispatch(auth());
+			if (result.success) {
+				setAuthError(false);
+			} else {
+				setAuthError(true);
+			}
+		}
+		getAuth();
+	}, []);
+	useEffect(() => {
+		if (lastRefresh) {
+			refreshDataInBase();
+		}
+	}, [lastRefresh])
+	if (authError) {
+		return (
+			<div className="wrapper">
+				<p className="text-center text-grey padding-main">
+					Нет токена доступа. Закройте приложение и войдите еще раз. Если
+					доступ к отчетам не восстановится, сообщите об этом
+					администратору Битрикс 24
+				</p>
+			</div>
+		)
+	}
 	return (
 		<div className="wrapper">
-			{/* <header className="header">
-				<img src={icon} alt="menu" className="header__toggler" />
-				<h1 className="header__title title-small">Power BI</h1>
-			</header> */}
 			{isAdmin 
 				? (
 					<nav className="nav-container mb-small block">
@@ -28,20 +58,17 @@ const App = () => {
 						</ul>
 					</nav>
 				)
-				: (
-					<nav className="nav-container mb-small block">
-						<ul className="nav nav_admin">
-							
-						</ul>
-					</nav>
-				)
+				: <></>
 			}
 			<Route exact path="/" >
-				{token && <User isAdmin={isAdmin} token={token} auth={auth} />}
+				{token 
+					? <User isAdmin={isAdmin} token={token} auth={auth} />
+					: <Loader />}
 			</Route>
 			<Route path="/admin" >
-				{!isAdmin && <Redirect to="/" />}
-				<Admin />
+				{isAdmin 
+					? <Admin />
+					: <Redirect to="/" /> }
 			</Route>
 		</div>
 	)

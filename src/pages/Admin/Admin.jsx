@@ -1,14 +1,45 @@
-import React, { useState } from 'react';
-import { Route, NavLink, Switch } from 'react-router-dom';
-import Reports from './Reports/Reports';
-import Users from './Users/Users';
-import Groups from './Groups/Groups';
-import Modal from './Modal/Modal';
-import Settings from './Settings/Settings';
+import React, { useState, useEffect } from "react";
+import { Route, NavLink, Switch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Reports from "./Reports/Reports";
+import Users from "./Users/Users";
+import Groups from "./Groups/Groups";
+import Modal from "./Modal/Modal";
+import Settings from "./Settings/Settings";
+import {
+	getReportGroups,
+	getUserGroups,
+	getUsers,
+	getReports,
+	getSettings,
+} from "../../redux/mainReducer";
 
 const Admin = () => {
-    let [modal, setModal] = useState({visible: false, screen: 1, error: false});
-    return (
+	let [modal, setModal] = useState({
+		visible: false,
+		screen: 1,
+		error: false,
+	});
+	const { reportGroups, reports, users, userGroups, settings } = useSelector((state) => state.main);
+	const dispatch = useDispatch();
+	useEffect(() => {
+		if (!reportGroups) {
+			dispatch(getReportGroups());
+		}
+		if (!reports) {
+			dispatch(getReports());
+		}
+		if (!users) {
+			dispatch(getUsers());
+		}
+		if (!userGroups) {
+			dispatch(getUserGroups());
+		}
+		if (!settings) {
+			dispatch(getSettings());
+		}
+	}, []);
+	return (
 		<div className="admin">
 			<nav className="nav-container block mb-small">
 				<ul className="nav_admin nav">
@@ -83,6 +114,6 @@ const Admin = () => {
 			</Switch>
 		</div>
 	);
-}
+};
 
 export default Admin;

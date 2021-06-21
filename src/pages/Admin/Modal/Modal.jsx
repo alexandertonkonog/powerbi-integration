@@ -19,7 +19,11 @@ const Modal = ({modal, openModal, type}) => {
 		const result = await dispatch(setGroup(body));
 		setFormLoading(false);
 		if (result.success) {
-			openModal({visible: true, screen: 2, error: null});
+			const success =
+				type === "report"
+					? "Вы успешно создали группу отчетов"
+					: "Вы успешно создали группу пользователей";
+			openModal({ visible: true, screen: 2, error: null, success });
 		} else {
 			openModal({visible: true, screen: 3, error: result.error});
 		}

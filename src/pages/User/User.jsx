@@ -27,20 +27,18 @@ const User = ({isAdmin, token, auth}) => {
     
     useEffect(() => {
         if (isAdmin) {
-            dispatch(getReportGroups());
+            if (!userReportGroups) {
+                dispatch(getReportGroups());
+            }
         } else {
-            dispatch(getUserReportGroups());
+            if (!userReportGroups) {
+                dispatch(getUserReportGroups());
+            }
         }
     }, [isAdmin]);
 
     useEffect(() => {
         refreshToken();
-        // const interval = setInterval(() => {
-        //     refreshToken();
-        // }, 10000);
-        // return () => {
-        //     clearInterval(interval);
-        // }
     }, [report])
 
     if (!userReportGroups) {

@@ -4,9 +4,11 @@ class App {
         this._progress = 0;
         this.form = document.querySelector('.form');
         this.inputs = [];
+        this.user = null;
         this.progressBar = document.querySelector('.progress__bar');
         this.progressText = document.querySelector('.progress__stage-text');
         this.init();
+        this.API_URL = 'http://localhost:8000';
     }
 
     set progress(value) {
@@ -16,23 +18,37 @@ class App {
     }
 
     async init() {
-        this.formInit();
-        this.authStatus = await this.auth();
-        this.tables = await this.createTables();
-        await this.createTablesColumns();
+        BX24.install(async () => {
+            this.formInit();
+            this.authStatus = await this.auth();
+            axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:'+this.user.ID);
+            await this.saveAdmin();
+            this.formInit();
+        });
     }
 
     async auth() {
         try {
             this.progressText.textContent = 'Аутентификация';
-            // const auth = await BX24.getAuth();
+            this.user = await this.callMethodPromise('profile', {}, 20);
+            return true;
         } catch (e) {
             console.log(e);
         } 
     }
 
+    async saveAdmin() {
+        try {
+            this.progressText.textContent = 'Сохранение пользователя как администратора';
+            const result = await axios.post(this.API_URL + '/api/settings/first', {user: +this.user.ID});
+            this.progress = 40;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
 
-    async callMethodPromise(method, body, percents) {
+    async callMethodPromise(method, body = {}, percents = 0) {
         let promise = new Promise((res, rej) => {
             BX24.callMethod(
                 method, 
@@ -41,14 +57,11 @@ class App {
                     if(result.error()) {
                         rej(result.error());
                     } else {
+                        this.progress = percents;
                         res(result.data());
                     }
                 }
             );
-            // setTimeout(() => {
-            //     this.progress = percents;
-            //     res([]);
-            // }, 500)
         })
         try {
             return await promise;
@@ -58,7 +71,38 @@ class App {
         }
     }
 
-    formInit() {
+    async callMethodPromiseMany(method, body = {}, percents = 0) {
+        let array = [];
+        const promise = new Promise((res, rej) => {
+            BX24.callMethod(
+                method, 
+                body,
+                function(result) {
+                    if(result.error()) {
+                        rej(result.error());
+                    } else {
+                        this.progress = percents;
+                        if (res.more()) {
+                            array = [...array, ...result.data()]
+                            res.next();
+                        } else {
+                            res(array);
+                        }
+                    }
+                }
+            );
+        })
+        try {
+            return await promise;
+        } catch (e) {
+            this.progressBar.style.backgroundColor = '#BE1622';
+            console.log(e);
+        }
+    }
+
+    async formInit() {
+        const result = axios.get(this.API_URL + '/api/settings/get');
+        this.createInputs(result.data);
         const inputs = this.form.querySelectorAll('.input-container');
         inputs.forEach(item => {
             this.inputs.push(new Input(item, this));
@@ -68,25 +112,33 @@ class App {
             await this.saveData();
             return true;
         })
+        this.form.classList.remove('form_hidden');
+    }
+
+    createInputs(data) {
+        const str = '';
+        data.forEach(item => {
+            str += `<div class="input-container">
+                        <label for="${item.serviceName}" class="label">
+                            <span class="label__text">${item.name}</span>
+                            <span class="label__error"></span>
+                        </label>
+                        <input value="${item.value}" name="${item.serviceName}" id="${item.serviceName}" type="text" class="input" placeholder="${item.name}">
+                        <p class="input-des">${item.description}<p>
+                    </div>`;
+        })
+        this.form.innerHTML = str;
     }
 
     async saveData() {
-        let error = false;
-        this.inputs.forEach(item => {
-            item.checkError();
-            if (item.error) {
-                error = true;
+        const values = Object.values(this.state);
+        if (values.length) {
+            try {
+                const result = await axios.post(this.API_URL + '/api/settings/set', this.state);
+                BX24.installFinish();
+            } catch (e) {
+                return false;
             }
-        })
-        if (!error) {
-            this.progressText.textContent = 'Сохранение';
-            await this.callMethodPromise('entity.item.add', {
-                ENTITY: 'power_bi_settings',
-                DATE_ACTIVE_FROM: new Date(),
-                DETAIL_PICTURE: '',
-                NAME: 'Настройки',
-                PROPERTY_VALUES: this.state,
-            }, 100)
         }
     }
 }
@@ -149,29 +201,17 @@ class Input {
     }
 
     checkError() {
-        const max = 200;
-        const min = 5;
 
-        if (!this.value) {
-            this.error = 'Это поле обязательно';
-        } else if (this.value.length < min) {
-            this.error = `Значение поля должно быть больше ${min} знаков`;
-        } else if (this.value.length > max) {
-            this.error = `Значение поля должно быть не больше ${max} знаков`;
-        } else {
-            this.error = false;
-        }       
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     if (BX24) {
-        BX24.init(function(){
-            window.POWERBIAPP = new App();
-        }); 
+        window.POWERBIAPP = new App();
     } else {
         const progressText = document.querySelector('.progress__stage-text');
         progressText.textContent = 'Ошибка загрузки библиотек';
     }
+    // window.POWERBIAPP = new App();
 })
 
