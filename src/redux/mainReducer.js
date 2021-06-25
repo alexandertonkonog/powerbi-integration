@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-let BX24;
-if (!window.BX24) {
-    BX24 = {
-        callMethod: async () => { return [{NAME: 'Александр Тонконог', ID: 55}]},
-        init: async () => {return true},
-        getAuth: async () => {return true}
-    };
-}
+// let BX24;
+// if (!window.BX24) {
+//     BX24 = {
+//         callMethod: async () => { return [{NAME: 'Александр Тонконог', ID: 55}]},
+//         init: async () => {return true},
+//         getAuth: async () => {return true}
+//     };
+// }
 
 const API_URL = 'https://h1.prekrasnodar.com';
 const SET_REPORT_GROUPS = 'SET_REPORT_GROUPS';
@@ -146,8 +146,7 @@ export const auth = () => async (dispatch) => {
         const init = await BXInitPromise();
         const auth = await BXAuthPromise();
         const user = await callMethodPromise('profile');
-        const id = 1;
-        axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + id);
+        axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + user.ID);
         const result = await axios.get(API_URL + '/api/token/get');
         dispatch({type: SET_AUTH, data: result.data});
         return {success: true};
@@ -225,6 +224,8 @@ export const setSettings = (body) => async (dispatch) => {
 
 export const refreshData = () => async (dispatch) => {
     try {
+        const init = await BXInitPromise();
+        const auth = await BXAuthPromise();
         const users = await callMethodPromiseMany('user.get');
         if (users && users.length) {
             const userArray = users.map(item => ({id: item.ID, name: item.NAME}));
@@ -242,23 +243,23 @@ export const refreshData = () => async (dispatch) => {
 const callMethodPromiseMany = async (method, body = {}, percents = 0) => {
     const array = [];
     const promise = new Promise((res, rej) => {
-        res(BX24.callMethod(
-            // method, 
-            // body,
-            // function(result) {
-            //     if(result.error()) {
-            //         rej(result.error());
-            //     } else {
-            //         this.progress = percents;
-            //         if (res.more()) {
-            //             array = [...array, ...result.data()]
-            //             res.next();
-            //         } else {
-            //             res(array);
-            //         }
-            //     }
-            // }
-        ));
+        BX24.callMethod(
+            method, 
+            body,
+            function(result) {
+                if(result.error()) {
+                    rej(result.error());
+                } else {
+                    this.progress = percents;
+                    if (res.more()) {
+                        array = [...array, ...result.data()]
+                        res.next();
+                    } else {
+                        res(array);
+                    }
+                }
+            }
+        );
     })
     try {
         return await promise;
@@ -269,19 +270,18 @@ const callMethodPromiseMany = async (method, body = {}, percents = 0) => {
 }
 
 const callMethodPromise = async (method, body = {}, percents = 0) => {
-    const array = [];
     const promise = new Promise((res, rej) => {
-        res(BX24.callMethod(
-            // method, 
-            // body,
-            // function(result) {
-            //     if(result.error()) {
-            //         rej(result.error());
-            //     } else {
-            //         res(result.data());
-            //     }
-            // }
-        ));
+        BX24.callMethod(
+            method, 
+            body,
+            function(result) {
+                if(result.error()) {
+                    rej(result.error());
+                } else {
+                    res(result.data());
+                }
+            }
+        );
     })
     try {
         return await promise;
@@ -298,7 +298,6 @@ const BXInitPromise = async (method, body = {}, percents = 0) => {
     try {
         return await promise;
     } catch (e) {
-        this.progressBar.style.backgroundColor = '#BE1622';
         console.log(e);
     }
 }
@@ -310,7 +309,6 @@ const BXAuthPromise = async (method, body = {}, percents = 0) => {
     try {
         return await promise;
     } catch (e) {
-        this.progressBar.style.backgroundColor = '#BE1622';
         console.log(e);
     }
 }
