@@ -8,7 +8,7 @@ class App {
         this.progressBar = document.querySelector('.progress__bar');
         this.progressText = document.querySelector('.progress__stage-text');
         this.init();
-        this.API_URL = 'http://localhost:8000';
+        this.API_URL = 'https://h1.prekrasnodar.com';
     }
 
     set progress(value) {
@@ -19,11 +19,11 @@ class App {
 
     async init() {
         BX24.install(async () => {
-            this.formInit();
             this.authStatus = await this.auth();
-            axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:'+this.user.ID);
-            await this.saveAdmin();
+            axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + this.user.ID);
             this.formInit();
+            await this.saveAdmin();
+            await this.formInit();
         });
     }
 
@@ -40,7 +40,8 @@ class App {
     async saveAdmin() {
         try {
             this.progressText.textContent = 'Сохранение пользователя как администратора';
-            const result = await axios.post(this.API_URL + '/api/settings/first', {user: +this.user.ID});
+            const result = await axios.post(this.API_URL + '/api/settings/first', 
+                {id: +this.user.ID, name: this.user.NAME + ' ' + this.user.LAST_NAME});
             this.progress = 40;
             return true;
         } catch (e) {
@@ -101,22 +102,27 @@ class App {
     }
 
     async formInit() {
-        const result = axios.get(this.API_URL + '/api/settings/get');
-        this.createInputs(result.data);
-        const inputs = this.form.querySelectorAll('.input-container');
-        inputs.forEach(item => {
-            this.inputs.push(new Input(item, this));
-        })
-        this.form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await this.saveData();
-            return true;
-        })
-        this.form.classList.remove('form_hidden');
+        try {
+            const result = await axios.get(this.API_URL + '/api/settings/get');
+            this.createInputs(result.data);
+            const inputs = this.form.querySelectorAll('.input-container');
+            inputs.forEach(item => {
+                this.inputs.push(new Input(item, this));
+            })
+            const btn = this.form.querySelector('.btn_submit');
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.saveData();
+                return true;
+            })
+            this.form.classList.remove('form_hidden');
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     createInputs(data) {
-        const str = '';
+        let str = '';
         data.forEach(item => {
             str += `<div class="input-container">
                         <label for="${item.serviceName}" class="label">
@@ -126,8 +132,12 @@ class App {
                         <input value="${item.value}" name="${item.serviceName}" id="${item.serviceName}" type="text" class="input" placeholder="${item.name}">
                         <p class="input-des">${item.description}<p>
                     </div>`;
+            this.state[item.serviceName] = item.value;
+            
         })
+        str += '<button class="btn btn_submit" type="submit">Сохранить</button>';
         this.form.innerHTML = str;
+        
     }
 
     async saveData() {
@@ -139,6 +149,8 @@ class App {
             } catch (e) {
                 return false;
             }
+        } else {
+            alert('Не введены значения полей');
         }
     }
 }

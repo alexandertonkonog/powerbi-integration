@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-// let BX24;
-// if (!window.BX24) {
-//     BX24 = {
-//         callMethod: async () => { return [{NAME: 'Александр Тонконог', ID: 55}]},
-//         init: async () => {return true},
-//         getAuth: async () => {return true}
-//     };
-// }
+if (!window.BX24) {
+    window.BX24 = {
+        callMethod: async () => { return [{NAME: 'Александр Тонконог', ID: 55}]},
+        init: async () => {return true},
+        getAuth: async () => {return true}
+    };
+}
 
 const API_URL = 'https://h1.prekrasnodar.com';
 const SET_REPORT_GROUPS = 'SET_REPORT_GROUPS';
@@ -35,7 +34,7 @@ export const setGroup = (options) => async (dispatch) => {
     let url, disType;
     if (options.type === 'report') {
         url = '/api/report/group/set';
-        disType = SET_REPORT_GROUPS;
+        disType = SET_REPORT_GROUPS_FOR_ADMIN;
     } else if (options.type === 'userGroup') {
         url = '/api/user/group/set';
         disType = SET_USER_GROUPS;
@@ -55,7 +54,7 @@ export const setEntitiesIntoGroup = (group, entities, type) => async (dispatch) 
     let url, disType;
     if (type === 'report') {
         url = '/api/report/group/fill';
-        disType = SET_REPORT_GROUPS;
+        disType = SET_REPORT_GROUPS_FOR_ADMIN;
     } else if (type === 'userGroup') {
         url = '/api/user/group/fill';
         disType = SET_USER_GROUPS;
@@ -82,7 +81,7 @@ export const removeEntitiesFromGroup = (group, entities, type) => async (dispatc
     let url, disType;
     if (type === 'report') {
         url = '/api/report/group/empty';
-        disType = SET_REPORT_GROUPS;
+        disType = SET_REPORT_GROUPS_FOR_ADMIN;
     } else if (type === 'user') {
         url = '/api/user/empty';
         disType = SET_USERS;
@@ -111,7 +110,7 @@ export const removeGroups = (groups, type) => async (dispatch) => {
     let url, disType;
     if (type === 'report') {
         url = '/api/report/group/remove';
-        disType = SET_REPORT_GROUPS;
+        disType = SET_REPORT_GROUPS_FOR_ADMIN;
     } else if (type === 'userGroup') {
         url = '/api/user/group/remove';
         disType = SET_USER_GROUPS;
@@ -143,7 +142,6 @@ export const getUserReportGroups = () => async (dispatch) => {
 export const auth = () => async (dispatch) => {
     try {
         //get id from bitrix
-        const init = await BXInitPromise();
         const auth = await BXAuthPromise();
         const user = await callMethodPromise('profile');
         axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + user.ID);
@@ -224,7 +222,6 @@ export const setSettings = (body) => async (dispatch) => {
 
 export const refreshData = () => async (dispatch) => {
     try {
-        const init = await BXInitPromise();
         const auth = await BXAuthPromise();
         const users = await callMethodPromiseMany('user.get');
         if (users && users.length) {
@@ -240,20 +237,19 @@ export const refreshData = () => async (dispatch) => {
     }
 }
 
-const callMethodPromiseMany = async (method, body = {}, percents = 0) => {
+const callMethodPromiseMany = async (method, body = {}) => {
     const array = [];
     const promise = new Promise((res, rej) => {
-        BX24.callMethod(
+        window.BX24.callMethod(
             method, 
             body,
             function(result) {
                 if(result.error()) {
                     rej(result.error());
                 } else {
-                    this.progress = percents;
-                    if (res.more()) {
+                    if (result.more()) {
                         array = [...array, ...result.data()]
-                        res.next();
+                        result.next();
                     } else {
                         res(array);
                     }
@@ -264,14 +260,13 @@ const callMethodPromiseMany = async (method, body = {}, percents = 0) => {
     try {
         return await promise;
     } catch (e) {
-        this.progressBar.style.backgroundColor = '#BE1622';
         console.log(e);
     }
 }
 
-const callMethodPromise = async (method, body = {}, percents = 0) => {
+const callMethodPromise = async (method, body = {}) => {
     const promise = new Promise((res, rej) => {
-        BX24.callMethod(
+        window.BX24.callMethod(
             method, 
             body,
             function(result) {
@@ -286,25 +281,14 @@ const callMethodPromise = async (method, body = {}, percents = 0) => {
     try {
         return await promise;
     } catch (e) {
-        this.progressBar.style.backgroundColor = '#BE1622';
         console.log(e);
     }
 }
 
-const BXInitPromise = async (method, body = {}, percents = 0) => {
-    const promise = new Promise((res, rej) => {
-        res(BX24.init());
-    })
-    try {
-        return await promise;
-    } catch (e) {
-        console.log(e);
-    }
-}
 
 const BXAuthPromise = async (method, body = {}, percents = 0) => {
     const promise = new Promise((res, rej) => {
-        res(BX24.getAuth());
+        res(window.BX24.getAuth());
     })
     try {
         return await promise;

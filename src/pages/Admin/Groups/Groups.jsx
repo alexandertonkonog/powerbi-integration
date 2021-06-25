@@ -38,8 +38,13 @@ const Groups = (props) => {
 		setSelectGroup(id);
 	};
 	const removeHandle = async (id, list, full) => {
-		if (id === 1 && list.length === 1) {
+		const group = userGroups.find(item => item.id === id);
+		if (group.users.length <= 1) {
 			alert("Нельзя удалить последнего члена группы администраторов");
+			return false;
+		}
+		if (id === 1 && list.length === group.users.length) {
+			alert("Нельзя удалить всех членов группы администраторов");
 			return false;
 		}
 		if (!window.confirm("Вы уверены?")) return false;
