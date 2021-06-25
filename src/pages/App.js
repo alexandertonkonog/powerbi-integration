@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, NavLink, Redirect } from 'react-router-dom';
+import { Route, NavLink, Redirect, Switch } from 'react-router-dom';
 import { auth, refreshData } from '../redux/mainReducer';
 import Admin from './Admin/Admin';
 import User from './User/User';
@@ -36,6 +36,7 @@ const App = () => {
 			refreshDataInBase();
 		}
 	}, [lastRefresh])
+
 	if (authError) {
 		return (
 			<div className="wrapper">
@@ -60,20 +61,22 @@ const App = () => {
 				)
 				: <></>
 			}
-			
-			<Route exact path="/" >
-				<Redirect to="reports" />
-			</Route>
-			<Route path="/reports" >
-				{token 
-					? <User isAdmin={isAdmin} token={token} auth={auth} />
-					: <Loader />}
-			</Route>
-			<Route path="/admin" >
-				{isAdmin 
-					? <Admin />
-					: <Redirect to="/" /> }
-			</Route>		
+			<Switch>
+				<Route exact path="/">
+					<Redirect to="/reports" />
+				</Route>
+				<Route path="/reports" >
+					{token 
+						? <User isAdmin={isAdmin} token={token} auth={auth} />
+						: <Loader />}
+				</Route>
+				<Route path="/admin" >
+					{isAdmin 
+						? <Admin />
+						: <Redirect to="/reports" /> }
+				</Route>
+			</Switch>
+			<Redirect to="/reports" />		
 		</div>
 	)
     

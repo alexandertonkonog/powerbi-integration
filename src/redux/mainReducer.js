@@ -144,6 +144,7 @@ export const auth = () => async (dispatch) => {
         //get id from bitrix
         const auth = await BXAuthPromise();
         const user = await callMethodPromise('profile');
+        console.log(user);
         axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + user.ID);
         const result = await axios.get(API_URL + '/api/token/get');
         dispatch({type: SET_AUTH, data: result.data});
@@ -224,8 +225,9 @@ export const refreshData = () => async (dispatch) => {
     try {
         const auth = await BXAuthPromise();
         const users = await callMethodPromiseMany('user.get');
+        console.log(users)
         if (users && users.length) {
-            const userArray = users.map(item => ({id: item.ID, name: item.NAME}));
+            const userArray = users.map(item => ({id: item.ID, name: item.NAME + ' ' + item.LAST_NAME}));
             const result = await axios.post(API_URL + '/api/settings/refresh', {users: userArray});
             dispatch({type: SET_USERS, data: result.data.users});
             dispatch({type: SET_REPORTS, data: result.data.reports});
@@ -238,7 +240,7 @@ export const refreshData = () => async (dispatch) => {
 }
 
 const callMethodPromiseMany = async (method, body = {}) => {
-    const array = [];
+    let array = [];
     const promise = new Promise((res, rej) => {
         window.BX24.callMethod(
             method, 
@@ -248,9 +250,12 @@ const callMethodPromiseMany = async (method, body = {}) => {
                     rej(result.error());
                 } else {
                     if (result.more()) {
-                        array = [...array, ...result.data()]
+                        const data = result.data();
+                        array = [...array, ...data];
                         result.next();
                     } else {
+                        const data = result.data();
+                        array = [...array, ...data];
                         res(array);
                     }
                 }
