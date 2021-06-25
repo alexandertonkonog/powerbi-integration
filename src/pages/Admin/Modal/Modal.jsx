@@ -46,14 +46,23 @@ const Modal = ({modal, openModal, type}) => {
 			placeholder: "Введите описание",
 		},
 	];
+	const getModalTitle = (type) => {
+		switch (type) {
+			case "report":
+				return "Создать группу отчетов";
+			case "userGroup":
+				return "Создать группу пользователей";
+			case "setting":
+				return "Изменение настроек";
+			default:
+				return "Пользователи";
+		}
+	}
 	const modalOptions = {
 		visible: modal.visible,
 		screen: modal.screen,
 		error: modal.error,
-		title:
-			type === "report"
-				? "Создать группу отчетов"
-				: "Создать группу пользователей",
+		title: getModalTitle(type),
 		success: modal.success,
 		modal: openModal,
 	};

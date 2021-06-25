@@ -1,9 +1,21 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import { models } from "powerbi-client";
 import { PowerBIEmbed } from "powerbi-client-react";
 
-const Report = ({ report, token, loading }) => {
+const Report = ({ token, groups }) => {
 	let [thisReport, setThisReport] = useState(null);
+
+	const params = useParams();
+
+	if (!params.groupId || !params.reportId) {
+		return (
+			<p className="text-center text-grey padding-main">
+				Выберите группу отчетов и конкретный отчет для отображения
+			</p>
+		);
+	}
+
 	if (!token) {
 		return (
 			<p className="text-center text-grey padding-main">
@@ -13,20 +25,10 @@ const Report = ({ report, token, loading }) => {
 			</p>
 		);
 	}
-	if (!report) {
-		return (
-			<p className="text-center text-grey padding-main">
-				Выберите группу отчетов и конкретный отчет для отображения
-			</p>
-		);
-	}
-	if (loading) {
-		return (
-			<p className="text-center text-grey padding-main">
-				Загрузка отчета
-			</p>
-		);
-	}
+
+	const groupItem = groups.find(item => item.id === +params.groupId);
+    const report = groupItem.reports.find(item => item.id === params.reportId);
+
 	return (
 		<PowerBIEmbed
 			embedConfig={{

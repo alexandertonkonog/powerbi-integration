@@ -9,8 +9,9 @@ if (!window.BX24) {
     };
 }
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = 'https://h1.prekrasnodar.com';
 const SET_REPORT_GROUPS = 'SET_REPORT_GROUPS';
+const SET_REPORT_GROUPS_FOR_ADMIN = 'SET_REPORT_GROUPS_FOR_ADMIN';
 const SET_REPORTS = 'SET_REPORTS';
 const SET_USERS = 'SET_USERS';
 const SET_USER_GROUPS = 'SET_USER_GROUPS';
@@ -22,6 +23,7 @@ const REFRESH_DATA = 'REFRESH_DATA';
 const initial = {
     isAdmin: false,
     reportGroups: null,
+    reportGroupsAdmin: null,
     reports: null,
     users: null,
     token: null,
@@ -158,7 +160,7 @@ export const auth = () => async (dispatch) => {
 export const getReportGroups = () => async (dispatch) => {
     try {
         const result = await axios.get(API_URL + '/api/report/group/get');
-        dispatch({type: SET_REPORT_GROUPS, data: result.data});
+        dispatch({type: SET_REPORT_GROUPS_FOR_ADMIN, data: result.data});
         return {success: true};
     } catch (e) {
         console.log(e);
@@ -319,6 +321,11 @@ export const mainReducer = (state = initial, action) => {
             return {
                 ...state,
                 reportGroups: action.data
+            }
+        case SET_REPORT_GROUPS_FOR_ADMIN: 
+            return {
+                ...state,
+                reportGroupsAdmin: action.data
             }
         case SET_USER_GROUPS: 
             return {

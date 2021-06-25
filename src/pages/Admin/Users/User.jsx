@@ -24,7 +24,7 @@ const User = (props) => {
 	});
 	let [formLoading, setFormLoading] = useState(false);
 	const dispatch = useDispatch();
-	const reportGroups = useSelector((state) => state.main.reportGroups);
+	const reportGroups = useSelector((state) => state.main.reportGroupsAdmin);
 	const users = useSelector((state) => state.main.users);
 	const modalOptions = {
 		visible: modal.visible,

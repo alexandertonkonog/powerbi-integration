@@ -20,10 +20,10 @@ const Admin = () => {
 		screen: 1,
 		error: false,
 	});
-	const { reportGroups, reports, users, userGroups, settings } = useSelector((state) => state.main);
+	const { reportGroupsAdmin, reports, users, userGroups, settings } = useSelector((state) => state.main);
 	const dispatch = useDispatch();
 	useEffect(() => {
-		if (!reportGroups) {
+		if (!reportGroupsAdmin) {
 			dispatch(getReportGroups());
 		}
 		if (!reports) {
@@ -108,7 +108,7 @@ const Admin = () => {
 					<Modal
 						openModal={setModal}
 						modal={modal}
-						type="userGroup"
+						type="setting"
 					/>
 				</Route>
 			</Switch>

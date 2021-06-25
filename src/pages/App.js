@@ -54,13 +54,17 @@ const App = () => {
 					<nav className="nav-container mb-small block">
 						<ul className="nav nav_admin">
 							<li><NavLink className="nav__link" activeClassName="nav__link_active" to='/admin'>Панель администратора</NavLink></li>
-							<li><NavLink exact className="nav__link" activeClassName="nav__link_active" to='/'>Пользовательский интерфейс</NavLink></li>
+							<li><NavLink exact className="nav__link" activeClassName="nav__link_active" to='/reports'>Пользовательский интерфейс</NavLink></li>
 						</ul>
 					</nav>
 				)
 				: <></>
 			}
+			
 			<Route exact path="/" >
+				<Redirect to="reports" />
+			</Route>
+			<Route path="/reports" >
 				{token 
 					? <User isAdmin={isAdmin} token={token} auth={auth} />
 					: <Loader />}
@@ -69,7 +73,7 @@ const App = () => {
 				{isAdmin 
 					? <Admin />
 					: <Redirect to="/" /> }
-			</Route>
+			</Route>		
 		</div>
 	)
     

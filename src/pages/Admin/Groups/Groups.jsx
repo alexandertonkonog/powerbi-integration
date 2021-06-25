@@ -248,7 +248,7 @@ const Groups = (props) => {
 								))
 							) : (
 								<li className="text-main text-grey padding-middle">
-									Все отчеты уже добавлены
+									Все пользователи уже добавлены
 								</li>
 							)
 						) : (
