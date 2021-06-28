@@ -35,9 +35,22 @@ const Settings = (props) => {
 	};
 	const refreshUsersAndReports = async () => {
 		setFormLoading(true);
-		await dispatch(setReports());
-		await dispatch(refreshData());
+		const repRes = await dispatch(setReports());
+		const userRes = await dispatch(refreshData());
 		setFormLoading(false);
+		if (userRes.success && repRes.success) {
+			props.openModal({
+				visible: true,
+				screen: 2,
+				success: "Вы успешно обновили данные",
+			});
+		} else {
+			props.openModal({
+				visible: true,
+				screen: 3,
+				error: "Ошибка обновления данных",
+			});
+		}
 	} 
 
     if (!fields) {

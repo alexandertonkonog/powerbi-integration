@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, Route } from 'react-router-dom';
-import { getReportGroups, getUserReportGroups } from "../../redux/mainReducer";
+import { getUserReportGroups } from "../../redux/mainReducer";
 import { cutText } from '../../utils/validate';
 import Dropdown from '../../components/Dropdown';
 import Report from './Report';
@@ -32,7 +32,7 @@ const User = ({isAdmin, token, auth}) => {
                                 className="nav__link" 
                                 activeClassName="nav__link_active" 
                                 to={'/reports/' + item.id}>
-                                {cutText(item.name, 20)}
+                                {groupData.length > 3 ? cutText(item.name, 20) : item.name}
                             </NavLink>
                         </li>
                     ))
@@ -47,6 +47,13 @@ const User = ({isAdmin, token, auth}) => {
                 <Group groups={userReportGroups} token={token} auth={auth} />
                 <main className="interface__content block">
                     <Report token={token.token} groups={userReportGroups} />
+                </main>
+            </Route>
+            <Route exact path="/reports">
+                <main className="interface__content block">
+                    <p className="text-center text-grey padding-main">
+                        Выберите группу отчетов для отображения в меню выше
+                    </p>
                 </main>
             </Route>
 		</div>

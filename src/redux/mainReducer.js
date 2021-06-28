@@ -241,9 +241,11 @@ export const refreshData = () => async (dispatch) => {
             dispatch({type: SET_REPORTS, data: result.data.reports});
             dispatch({type: REFRESH_DATA, data: result.data.lastRefresh});
         }
+        return {success: true};
     } catch (e) {
         alert('Не удалось обновить пользователей и отчеты');
         console.log(e);
+        return {success: false};
     }
 }
 

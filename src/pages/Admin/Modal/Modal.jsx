@@ -37,14 +37,14 @@ const Modal = ({modal, openModal, type}) => {
 			text: "Название",
 			placeholder: "Введите название",
 		},
-		{
-			id: 2,
-			name: "description",
-			req: false,
-			validate: null,
-			text: "Описание",
-			placeholder: "Введите описание",
-		},
+		// {
+		// 	id: 2,
+		// 	name: "description",
+		// 	req: false,
+		// 	validate: null,
+		// 	text: "Описание",
+		// 	placeholder: "Введите описание",
+		// },
 	];
 	const getModalTitle = (type) => {
 		switch (type) {

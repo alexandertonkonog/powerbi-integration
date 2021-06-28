@@ -30,7 +30,7 @@ const Groups = (props) => {
 		screen: modal.screen,
 		error: modal.error,
 		title: "Пользователи",
-		success: "Вы успешно добавили элементы",
+		success: modal.success,
 		modal: setModal,
 	};
 	const addHandle = (id) => {
@@ -69,7 +69,7 @@ const Groups = (props) => {
 		setFormLoading(false);
 		if (result) {
 			if (result.success) {
-				setModal({ visible: true, screen: 2, error: null });
+				setModal({ visible: true, screen: 2, error: null, success: 'Вы успешно удалили элементы' });
 				return true;
 			} else {
 				setModal({ visible: true, screen: 3, error: result.error });
@@ -90,7 +90,11 @@ const Groups = (props) => {
 			if (result.success) {
 				setGroups([]);
 				setReports([]);
-				setModal({ visible: true, screen: 2, error: result.null });
+				setModal({ 
+					visible: true, 
+					screen: 2, 
+					error: result.null, 
+					success: 'Вы успешно добавили элементы' });
 			} else {
 				setModal({ visible: true, screen: 3, error: result.error });
 			}

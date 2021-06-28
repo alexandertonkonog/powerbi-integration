@@ -38,7 +38,7 @@ const Group = ({ groups, token, auth }) => {
                             className="nav__link" 
                             activeClassName="nav__link_active" 
                             to={'/reports/'+ params.groupId + '/' + item.id}>
-                            {cutText(item.name, 20)}
+                            {reportData.length > 3 ? cutText(item.name, 20) : item.name}
                         </NavLink>
                     </li>
                 ))

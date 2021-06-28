@@ -11,7 +11,7 @@ const Report = ({ token, groups }) => {
 	if (!params.groupId || !params.reportId) {
 		return (
 			<p className="text-center text-grey padding-main">
-				Выберите группу отчетов и конкретный отчет для отображения
+				Выберите конкретный отчет для отображения в меню выше
 			</p>
 		);
 	}

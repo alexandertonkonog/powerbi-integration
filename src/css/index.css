@@ -464,6 +464,8 @@ ul.list__item-dropdown {
 .modal__content {
   background: #fff;
   max-height: 90vh;
+  width: 60%;
+  margin: auto;
   overflow-y: auto;
   border-radius: 6px;
   padding: 40px 30px;

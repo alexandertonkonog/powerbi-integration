@@ -15,7 +15,7 @@ const ModalWrap = ({ options, children }) => {
 	};
 	return (
 		<div className="modal" onClick={clickModal}>
-			<div className="modal__content wrapper">
+			<div className="modal__content">
 				<p
 					className="modal__exit"
 					onClick={() =>
