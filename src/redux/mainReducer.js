@@ -141,10 +141,8 @@ export const getUserReportGroups = () => async (dispatch) => {
 
 export const auth = () => async (dispatch) => {
     try {
-        //get id from bitrix
         const auth = await BXAuthPromise();
         const user = await callMethodPromise('profile');
-        console.log(user);
         axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + user.ID);
         const result = await axios.get(API_URL + '/api/token/get');
         dispatch({type: SET_AUTH, data: result.data});
@@ -169,6 +167,17 @@ export const getReportGroups = () => async (dispatch) => {
 export const getReports = () => async (dispatch) => {
     try {
         const result = await axios.get(API_URL + '/api/report/get');
+        dispatch({type: SET_REPORTS, data: result.data});
+        return {success: true};
+    } catch (e) {
+        console.log(e);
+        return {success: false};
+    }
+}
+
+export const setReports = () => async (dispatch) => {
+    try {
+        const result = await axios.post(API_URL + '/api/report/set');
         dispatch({type: SET_REPORTS, data: result.data});
         return {success: true};
     } catch (e) {
@@ -225,7 +234,6 @@ export const refreshData = () => async (dispatch) => {
     try {
         const auth = await BXAuthPromise();
         const users = await callMethodPromiseMany('user.get');
-        console.log(users)
         if (users && users.length) {
             const userArray = users.map(item => ({id: item.ID, name: item.NAME + ' ' + item.LAST_NAME}));
             const result = await axios.post(API_URL + '/api/settings/refresh', {users: userArray});
@@ -289,7 +297,6 @@ const callMethodPromise = async (method, body = {}) => {
         console.log(e);
     }
 }
-
 
 const BXAuthPromise = async (method, body = {}, percents = 0) => {
     const promise = new Promise((res, rej) => {

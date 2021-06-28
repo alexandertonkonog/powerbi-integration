@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../../../components/Input";
-import { setSettings } from "../../../redux/mainReducer";
+import { setSettings, refreshData, setReports } from "../../../redux/mainReducer";
 import LoadButton from '../../../components/LoadButton';
 import Loader from "../../../components/Loader";
 
@@ -32,7 +32,13 @@ const Settings = (props) => {
 		} else {
 			props.openModal({ visible: true, screen: 3, error: result.error });
 		}
-	}; 
+	};
+	const refreshUsersAndReports = async () => {
+		setFormLoading(true);
+		await dispatch(setReports());
+		await dispatch(refreshData());
+		setFormLoading(false);
+	} 
 
     if (!fields) {
 		return (
@@ -46,7 +52,7 @@ const Settings = (props) => {
 
     return (
 		<main className="main settings block padding-small mt-main">
-			<section className="settings__col">
+			<section className="settings__col settings__form">
 				<div className="settings__des mb-main">
 					<h2 className="title-small mb-small">Настройки</h2>
 					<p className="text-small text-grey mb-middle">
@@ -82,7 +88,7 @@ const Settings = (props) => {
 					)}
 				</Form>
 			</section>
-			<section className="settings__col">
+			<section className="settings__col settings__current">
 				<div className="settings__des mb-main">
 					<h2 className="title-small mb-middle">Текущие значения</h2>
 					{fields.map((item) => (
@@ -95,6 +101,20 @@ const Settings = (props) => {
 						</p>
 					))}
 				</div>
+			</section>
+			<section className="settings__col settings__db">
+				<div className="settings__des mb-main">
+					<h2 className="title-small mb-small">Обновление базы данных</h2>
+					<p className="text-small text-grey mb-middle">
+						Нажмите на кнопку, чтобы обновить данные отчетов и пользователей. Это полезно, если необходимо мгновенно увидеть измененения из Power BI
+					</p>
+				</div>
+				<LoadButton
+					text="Обновить"
+					onClick={refreshUsersAndReports}
+					addClass="btn_blue text-uppercase"
+					loading={formLoading}
+				/>
 			</section>
 		</main>
 	);

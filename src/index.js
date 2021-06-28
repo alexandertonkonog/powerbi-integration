@@ -6,8 +6,6 @@ import { Provider } from 'react-redux';
 import { store } from './redux/redux';
 import './css/index.css';
 
-console.log(window.location.href);
-
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>

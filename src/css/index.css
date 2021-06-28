@@ -488,7 +488,8 @@ ul.list__item-dropdown {
 .settings {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 40px;
+  grid-gap: 40px;
+
 }
 .settings__col {
   padding: 0 20px;
@@ -499,6 +500,17 @@ ul.list__item-dropdown {
 }
 .settings__text {
   line-height: 22px;
+}
+.settings__form {
+  grid-column: 1/2;
+  grid-row: 1/4;
+}
+.settings__current {
+  grid-column: 2/3;
+}
+.settings__db {
+  grid-column: 2/3;
+  grid-row: 2/3;
 }
 
 /*user*/
@@ -511,6 +523,7 @@ ul.list__item-dropdown {
   object-fit: cover;
   height: 50vh;
 }
+
 
 /*header*/
 .header {

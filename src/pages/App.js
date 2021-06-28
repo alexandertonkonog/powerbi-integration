@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, NavLink, Redirect, Switch } from 'react-router-dom';
-import { auth, refreshData } from '../redux/mainReducer';
+import { auth, refreshData, setReports } from '../redux/mainReducer';
 import Admin from './Admin/Admin';
 import User from './User/User';
 import Loader from '../components/Loader';
@@ -18,6 +18,7 @@ const App = () => {
 		const diff = (now - date) / 3600000;
 		if (diff > 1) {
 			dispatch(refreshData());
+			dispatch(setReports());
 		}
 	}
 	useEffect(() => {
