@@ -101,7 +101,7 @@ export const removeEntitiesFromGroup = (group, entities, type) => async (dispatc
             dispatch({type: disType, data: result.data});
             return {success: true};
         } catch (e) {
-            return {success: false};
+            return {success: false, message: e?.response?.data?.message};
         }
     }
 }
@@ -143,6 +143,9 @@ export const auth = () => async (dispatch) => {
     try {
         const auth = await BXAuthPromise();
         const user = await callMethodPromise('profile');
+        // const user = {
+        //     ID: 1
+        // }
         axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('jXOJqUHSTK:j1P81OaeLF:' + user.ID);
         const result = await axios.get(API_URL + '/api/token/get');
         dispatch({type: SET_AUTH, data: result.data});

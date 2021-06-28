@@ -38,8 +38,9 @@ const Groups = (props) => {
 		setSelectGroup(id);
 	};
 	const removeHandle = async (id, list, full) => {
+		console.log(id, list, full)
 		const group = userGroups.find(item => item.id === id);
-		if (group.users.length <= 1) {
+		if (group.users.length <= 1 && id === 1) {
 			alert("Нельзя удалить последнего члена группы администраторов");
 			return false;
 		}
@@ -72,7 +73,7 @@ const Groups = (props) => {
 				setModal({ visible: true, screen: 2, error: null, success: 'Вы успешно удалили элементы' });
 				return true;
 			} else {
-				setModal({ visible: true, screen: 3, error: result.error });
+				setModal({ visible: true, screen: 3, error: result.message });
 				return false;
 			}
 		} else {
